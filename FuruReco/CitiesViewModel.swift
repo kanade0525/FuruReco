@@ -8,7 +8,7 @@ class CitiesViewModel: ObservableObject {
     @Published var cities: [Cities] = []
     
     // 選択された市町村データを格納する配列
-    @Published var selectedCities: [Cities] = []
+//    @Published var selectedCities: [Cities] = []
 
     // 市町村データを取得するメソッド
     func fetchCities() {
