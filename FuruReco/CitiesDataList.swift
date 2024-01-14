@@ -4,6 +4,7 @@ struct CitiesDataList: View {
     // StateでisSelectedを管理します
     @State private var isSelected: Bool = false
     @State private var selectedCities: [Int] = [] // チェックがついた都市のIDを保持する配列
+    @State private var showAlert: Bool = false
 
     // 表示するCityの情報を受け取ります
     let city: Cities
@@ -40,6 +41,15 @@ struct CitiesDataList: View {
                 // cityのidがselectedCitiesに含まれていればisSelectedをtrueに設定
                 isSelected = loadedSelectedCities.contains(city.id)
             }
+
+            // アラートが表示された後、再びアプリが読み込まれる時に初期化
+            showAlert = false
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("操作が完了しました"),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
     
@@ -59,6 +69,9 @@ struct CitiesDataList: View {
 
         // UserDefaultsに選択された都市のIDを保存
         saveSelectedCities()
+
+        // アラートを表示
+        showAlert = true
     }
 
     // UserDefaultsに選択された都市のIDを保存するメソッド
