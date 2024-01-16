@@ -47,7 +47,7 @@ struct CitiesDataList: View {
         }
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("操作が完了しました"),
+                title: Text("完了しました"),
                 dismissButton: .default(Text("OK"))
             )
         }
