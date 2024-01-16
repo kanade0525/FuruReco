@@ -29,6 +29,10 @@ struct CitiesDataList: View {
                     .foregroundColor(.gray.opacity(0.8))
                     .font(.system(size: 12, weight: .light))
             }
+            .contentShape(Rectangle()) // タップの検出範囲を広げる
+            .onTapGesture {
+                // 何もしない
+            }
             
             // CheckBoxViewを使用して選択状態を表示・管理
             CheckBoxView(isSelected: $isSelected)
