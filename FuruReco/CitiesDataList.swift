@@ -4,6 +4,7 @@ struct CitiesDataList: View {
     // StateでisSelectedを管理します
     @State private var isSelected: Bool = false
     @State private var selectedCities: [Int] = [] // チェックがついた都市のIDを保持する配列
+    @State private var isSaving: Bool = false
     @State private var showAlert: Bool = false
 
     // 表示するCityの情報を受け取ります
@@ -48,9 +49,19 @@ struct CitiesDataList: View {
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("完了しました"),
-                dismissButton: .default(Text("OK"))
+                dismissButton: .default(Text("閉じる"))
             )
         }
+        .overlay(
+            Group {
+                if isSaving {
+                    // アクティビティインジケータ
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding()
+                }
+            }
+        )
     }
     
     // チェックの状態を切り替えるメソッド
@@ -66,12 +77,17 @@ struct CitiesDataList: View {
                 selectedCities.remove(at: index)
             }
         }
+        
+        isSaving = true
+
+        // 保存処理の完了後にボタンを有効に戻す
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            isSaving = false
+            showAlert = true
+        }
 
         // UserDefaultsに選択された都市のIDを保存
         saveSelectedCities()
-
-        // アラートを表示
-        showAlert = true
     }
 
     // UserDefaultsに選択された都市のIDを保存するメソッド
