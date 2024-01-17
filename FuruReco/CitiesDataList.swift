@@ -77,30 +77,35 @@ struct CitiesDataList: View {
             selectedCities.append(city.id)
         } else {
             // チェックが外れた場合、都市のIDを配列から削除
-            if let index = selectedCities.firstIndex(of: city.id) {
-                selectedCities.remove(at: index)
-            }
+            selectedCities.removeAll { $0 == city.id }
         }
-        
+
         isSaving = true
 
-        // 保存処理の完了後にボタンを有効に戻す
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        // 保存処理を同期的に行う
+        Task {
+            await saveSelectedCities()
+
+            // 保存処理の完了後にボタンを有効に戻す
             isSaving = false
             showAlert = true
         }
-
-        // UserDefaultsに選択された都市のIDを保存
-        saveSelectedCities()
     }
 
     // UserDefaultsに選択された都市のIDを保存するメソッド
-    private func saveSelectedCities() {
+    private func saveSelectedCities() async {
         var updatedSelectedCities = UserDefaults.standard.array(forKey: "selectedCities") as? [Int] ?? []
-        
-        if !updatedSelectedCities.contains(city.id) {
-            updatedSelectedCities.append(city.id)
-            UserDefaults.standard.set(updatedSelectedCities, forKey: "selectedCities")
+
+        if isSelected {
+            // チェックがついている場合、都市のIDを追加
+            if !updatedSelectedCities.contains(city.id) {
+                updatedSelectedCities.append(city.id)
+            }
+        } else {
+            // チェックが外れている場合、都市のIDを削除
+            updatedSelectedCities.removeAll { $0 == city.id }
         }
+
+        UserDefaults.standard.set(updatedSelectedCities, forKey: "selectedCities")
     }
 }
