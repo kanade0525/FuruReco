@@ -5,16 +5,16 @@ struct MyPageView: View {
     @State private var userName: String = ""
     @State private var isClearConfirmationAlertPresented = false
     @State private var isCompletionAlertPresented = false
-    @State private var userData: UserData?
+    @State private var selectedCitiesData: SelectedCitiesData?
 
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
                 // selectedCitiesのパーセント表記を表示
-                Text("ふるさと納税達成率: \(userData?.selectedCitiesPercentage ?? "")%")
+                Text("ふるさと納税達成率: \(selectedCitiesData?.selectedCitiesPercentage ?? "")%")
                     .font(.headline)
                     .padding()
-                Text("\(userData?.selectedCitiesCount ?? "") 自治体")
+                Text("\(selectedCitiesData?.selectedCitiesCount ?? "") 自治体")
                 HStack(alignment: .center) {
                     Image(systemName: "person.circle")
                         .resizable()
@@ -49,7 +49,7 @@ struct MyPageView: View {
             .onAppear {
                 // ビューが表示されたときにユーザーデータをロード
                 loadUserInfo()
-                updateUserData()
+                updateSelectedCitiesData()
             }
             .navigationTitle("マイページ")
         }
@@ -63,8 +63,8 @@ struct MyPageView: View {
     }
     
     // ユーザーデータを更新するメソッド
-    private func updateUserData() {
-        userData = UserData(selectedCitiesCount: selectedCitiesCount(), selectedCitiesPercentage: calculateSelectedCitiesPercentage())
+    private func updateSelectedCitiesData() {
+        selectedCitiesData = SelectedCitiesData(selectedCitiesCount: selectedCitiesCount(), selectedCitiesPercentage: calculateSelectedCitiesPercentage())
     }
 
     private func saveUserInfo() {
@@ -124,7 +124,7 @@ struct MyButtonStyle: ButtonStyle {
     }
 }
 
-struct UserData {
+struct SelectedCitiesData {
     var selectedCitiesCount: String = "0"
     var selectedCitiesPercentage: String = "0.0"
 }
