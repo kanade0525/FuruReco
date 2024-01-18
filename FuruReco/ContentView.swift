@@ -2,20 +2,23 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        // TabViewを使用して複数のビューを切り替える
         TabView {
-            // CitiesViewをタブに追加
             CitiesView()
                 .tabItem {
-                    Image(systemName: "magnifyingglass") // タブのアイコン
-                    Text("自治体検索") // タブのテキスト
+                    Image(systemName: "magnifyingglass")
+                    Text("自治体検索")
                 }
             
-            // MyPageViewをタブに追加
             MyPageView()
                 .tabItem {
-                    Image(systemName: "person") // タブのアイコン
-                    Text("マイページ") // タブのテキスト
+                    Image(systemName: "person")
+                    Text("マイページ")
+                }
+
+            TrophyView()
+                .tabItem {
+                    Image(systemName: "trophy")
+                    Text("実績")
                 }
         }
     }
