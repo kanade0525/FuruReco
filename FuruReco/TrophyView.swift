@@ -6,14 +6,10 @@ struct Trophy {
     let subtitle: String
     let target: Int
     let currentCalculator: () -> Int
-
-    // current を計算する関数を呼ぶプロパティ
-    var current: Int {
-        currentCalculator()
-    }
 }
 
 struct TrophyView: View {
+    @ObservedObject private var userSettings = UserSettings()
     // 動的な実績データ
     let trophies: [Trophy] = [
         Trophy(title: "ふるさと納税ビギナー", subtitle: "1自治体に寄附する", target: 1, currentCalculator: { selectedCitiesCount() }),
@@ -36,7 +32,7 @@ struct TrophyView: View {
             // トロフィーの一覧を表示
             List {
                 ForEach(trophies, id: \.title) { trophy in
-                    TrophyRow(trophy: trophy)
+                    TrophyRow(trophy: trophy, selectedCitiesCount: userSettings.selectedCitiesCount)
                 }
             }
             .navigationTitle("実績一覧")
@@ -50,13 +46,14 @@ func selectedCitiesCount() -> Int {
 
 struct TrophyRow: View {
     let trophy: Trophy
+    let selectedCitiesCount: Int
 
     var body: some View {
         HStack {
             Image(systemName: "trophy.fill")
                 .resizable()
                 .frame(width: 30, height: 30)
-                .foregroundColor(trophy.current >= trophy.target ? .yellow : .gray)
+                .foregroundColor(trophy.currentCalculator() >= trophy.target ? .yellow : .gray)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(trophy.title)
@@ -70,7 +67,7 @@ struct TrophyRow: View {
                     .foregroundColor(.gray.opacity(0.8))
                     .font(.system(size: 12, weight: .light))
 
-                CustomProgressBar(percentage: Double(trophy.current) / Double(trophy.target) * 100)
+                CustomProgressBar(percentage: Double(trophy.currentCalculator()) / Double(trophy.target) * 100)
                     .frame(height: 10)
             }
 
